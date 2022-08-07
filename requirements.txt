@@ -1,2 +1,4 @@
 joblib
 plotly
+mlxtend
+scikit-learn
