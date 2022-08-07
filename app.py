@@ -83,7 +83,8 @@ with tab1:
     ## Rendering results
     
     fig = px.bar(probabilities, barmode='group'
-                ,color_discrete_sequence=["#964B00", "#00733e", "#0e67ab","#d3202a","#150b09", "#bdbdbd"])
+                ,color_discrete_sequence=["#964B00", "#00733e", "#0e67ab","#d3202a","#150b09", "#bdbdbd"]
+                ,title=f'Probability Plot for {card_name}')
     fig.update_yaxes(range=[0,1.0],title='Probability')
     fig.update_xaxes(visible=False)
     fig.update_layout(legend_title_text='Color Identity')
@@ -178,7 +179,8 @@ with tab2:
     ## Rendering results
     
     fig = px.bar(probabilities, barmode='group'
-                ,color_discrete_sequence=["#964B00", "#00733e", "#0e67ab","#d3202a","#150b09", "#bdbdbd"])
+                ,color_discrete_sequence=["#964B00", "#00733e", "#0e67ab","#d3202a","#150b09", "#bdbdbd"]
+                ,title=f'Probability Plot for {name}')
     fig.update_yaxes(range=[0,1.0],title='Probability')
     fig.update_xaxes(visible=False)
     fig.update_layout(legend_title_text='Color Identity')

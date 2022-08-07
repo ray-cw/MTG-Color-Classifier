@@ -14,4 +14,12 @@ There are 5 colors in MTG. We can also consider the absence of any color to be a
 
 ### The Dataset
 
-I have obtained a dataset of all unique cards (up to July 8) from [MTGJSON.com](https://mtgjson.com). 
+I have obtained a dataset of all unique cards (up to July 8) from [MTGJSON.com](https://mtgjson.com).
+
+### Writeup
+
+If you are interested in learning more behind the process that went into this project, I encourage you to checkout my full write up at [my website](https://ray-cw.github.io).
+
+### Demo
+
+A demo of how my model works can be accessed at [this link](https://ray-cw-mtg-color-classifier-app-i4ciqj.streamlitapp.com/) so please check it out if you are curious.
