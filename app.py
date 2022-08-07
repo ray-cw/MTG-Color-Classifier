@@ -33,12 +33,12 @@ model = joblib.load('models/mtg_logit.pkl')
 coef_df = pd.read_csv('data/coef.csv').set_index('coef')
 
 TYPES = ('Creature','Instant','Enchantment','Sorcery','Artifact'
-        ,'Land','Artifact Creature','Planswalker','Creature Enchantment','Instant Tribal'
+        ,'Land','Artifact Creature','Planeswalker','Creature Enchantment','Instant Tribal'
         ,'Artifact Land','Sorcery Tribal','Enchantment Tribal','Artifact Tribal','Artifact Enchantment'
         ,'Creature Land','Enchantment Land')
 
 class_color = {0: 'Colorless', 1: 'Green', 2: 'Blue', 3: 'Red', 4: 'Black', 5: 'White'}
-color_img = {0: 'assets/colourless.png', 1: 'assets/green.png', 2: 'assets/blue.png'
+color_img = {0: 'assets/colorless.png', 1: 'assets/green.png', 2: 'assets/blue.png'
             , 3: 'assets/red.png', 4: 'assets/black.png', 5: 'assets/white.png'}
 
 tab1, tab2 = st.tabs(["Existing Cards", "Custom Cards"])
