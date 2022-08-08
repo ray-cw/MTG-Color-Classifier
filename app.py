@@ -213,13 +213,17 @@ with tab3:
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        st.selectbox("Class",class_color.values())
+        class_id = st.selectbox("Class",class_color.keys())
     with col2:
-        st.selectbox("Sort by",('Ascending','Descending'))
+        ascending = st.selectbox("Sort by",('Descending','Ascending')) == 'Ascending'
     with col3:
-        st.number_input("Number of Results",5, value=10)
+        num_results = st.number_input("Number of Results",5, value=10)
 
-    fig = px.bar()
+    fig = px.bar(coef_df[str(class_id)].sort_values(ascending=ascending).head(num_results)
+                 ,title=f"{class_color[class_id]}")
+    fig.update_layout(showlegend=False)
+
+    st.plotly_chart(fig, use_container_width=True)
 
 
 #######################################################################################################################################
