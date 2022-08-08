@@ -10,12 +10,6 @@ import plotly.express as px
 
 
 #######################################################################################################################################
-### LAUNCHING THE APP ON THE LOCAL MACHINE
-### 1. Save your *.py file (the file and the dataset should be in the same folder)
-### 2. Open git bash (Windows) or Terminal (MAC) and navigate (cd) to the folder containing the *.py and *.csv files
-### 3. Execute... streamlit run <name_of_file.py>
-### 4. The app will launch in your browser. A 'Rerun' button will appear every time you SAVE an update in the *.py file
-
 
 st.title("MTG Color Classifier")
 
@@ -24,14 +18,13 @@ st.title("MTG Color Classifier")
 
 # Load our models using joblib
 
-
-
 encoder = joblib.load('models/subtype_encoder.pkl')
 vectorizer = joblib.load('models/count_vectorizer.pkl')
 model = joblib.load('models/mtg_logit.pkl')
 
 coef_df = pd.read_csv('data/coef.csv').set_index('coef')
 
+# Set all known types to create a dropdown
 TYPES = ('Creature','Instant','Enchantment','Sorcery','Artifact'
         ,'Land','Artifact Creature','Planeswalker','Creature Enchantment','Instant Tribal'
         ,'Artifact Land','Sorcery Tribal','Enchantment Tribal','Artifact Tribal','Artifact Enchantment'
@@ -41,27 +34,27 @@ class_color = {0: 'Colorless', 1: 'Green', 2: 'Blue', 3: 'Red', 4: 'Black', 5: '
 color_img = {0: 'assets/colorless.png', 1: 'assets/green.png', 2: 'assets/blue.png'
             , 3: 'assets/red.png', 4: 'assets/black.png', 5: 'assets/white.png'}
 
-tab1, tab2 = st.tabs(["Existing Cards", "Custom Cards"])
+tab1, tab2, tab3 = st.tabs(["Existing Cards", "Custom Cards", "Coefficients"])
+
+
+#######################################################################################################################################
+
+## EXISTING CARDS
+
+#######################################################################################################################################
 
 with tab1:
     st.subheader("Existing Card Database")
 
-
     all_cards_df = pd.read_csv('data/all_cards.csv').set_index('name')
 
-
     # Asking for cards
-
-
     card_name = st.selectbox('Choose a card:', all_cards_df.index)
-
+    # Find card in database
     chosen_card = all_cards_df.loc[[card_name]]
 
-
     ## Find the image
-
-    r = requests.get(f"https://api.scryfall.com/cards/search?q=!'{card_name}'")
-   
+    r = requests.get(f"https://api.scryfall.com/cards/search?q=!'{card_name}'")   
     try:
         image_link = r.json()['data'][0]['image_uris']['large']
     except:
@@ -69,19 +62,15 @@ with tab1:
         image_link = r.json()['data'][0]['image_uris']['large']
 
     ## Vectorizing...
-
     column_names = [('text_' + x) for x in vectorizer.get_feature_names()]
-
     chosen_card[column_names] = vectorizer.transform(chosen_card['name_text']).todense()
     chosen_card.drop('name_text', axis=1, inplace=True)
 
     # Predicting
-
     prediction = model.predict(chosen_card)
     probabilities = pd.DataFrame(model.predict_proba(chosen_card)).rename(columns=class_color)
 
-    ## Rendering results
-    
+    ## Rendering results    
     fig = px.bar(probabilities, barmode='group'
                 ,color_discrete_sequence=["#964B00", "#00733e", "#0e67ab","#d3202a","#150b09", "#bdbdbd"]
                 ,title=f'Probability Plot for {card_name}')
@@ -93,9 +82,9 @@ with tab1:
 
     col1, col2 = st.columns(2)
 
-
     with col1:
         st.image(image_link)
+
     with col2:
         st.write(f'This looks like a **{class_color[prediction[0]]}** card.')
         st.write(f'#### Indicators for {class_color[prediction[0]]}')
@@ -112,8 +101,11 @@ with tab1:
         for index, row in significant_tokens.head(5).iterrows():
             st.markdown(f"- {row.name}")
 
+#######################################################################################################################################
 
-    
+### CUSTOM CARD CREATION
+
+#######################################################################################################################################
 
 with tab2:
     st.subheader("Build a Custom Card")
@@ -208,10 +200,26 @@ with tab2:
         for index, row in significant_tokens.head(5).iterrows():
             st.markdown(f"- {row.name}")
 
+#######################################################################################################################################
 
+### VIEW COEFFICIENTS
 
+#######################################################################################################################################
 
+with tab3:
 
+    st.subheader("Visualizations of Coefficients")
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.selectbox("Class",class_color.values())
+    with col2:
+        st.selectbox("Sort by",('Ascending','Descending'))
+    with col3:
+        st.number_input("Number of Results",5, value=10)
+
+    fig = px.bar()
 
 
 #######################################################################################################################################
